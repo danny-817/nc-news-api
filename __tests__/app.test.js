@@ -35,3 +35,13 @@ describe("/api/topics", () => {
     });
   });
 });
+// describe("/api/articles/", () => {
+//   describe("GET requests", () => {
+//     test("responds with a 200 status code ", () => {
+//       return request(app).get("/api/articles").expect(200);
+//     });
+//     test("responds with the specified article when a GET request is made to /api/articles/:article_id", () => {
+//       return request(app).get("/api/articles/:article_id").expect(200);
+//     });
+//   });
+// });
