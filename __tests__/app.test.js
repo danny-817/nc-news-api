@@ -60,23 +60,26 @@ describe("/api/articles/", () => {
           expect(article).toHaveProperty("article_img_url");
         });
     });
-    test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
-      return request(app)
-        .get("/api/articles/100")
-        .expect(404)
-        .then(({ body }) => {
-          const { msg } = body;
-          expect(msg).toBe("Not Found");
-        });
+  });
+});
+test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
+  return request(app)
+    .get("/api/articles/100")
+    .expect(404)
+    .then(({ body }) => {
+      const { msg } = body;
+      expect(msg).toBe("Not Found");
     });
-    test("responds with 400 `Bad Request` when handed something other than a number", () => {
-      return request(app)
-        .get("/api/articles/one")
-        .expect(400)
-        .then(({ body }) => {
-          const { msg } = body;
-          expect(msg).toBe("Bad Request");
-        });
+});
+test("responds with 400 `Bad Request` when handed something other than a number", () => {
+  return request(app)
+    .get("/api/articles/one")
+    .expect(400)
+    .then(({ body }) => {
+      const { msg } = body;
+      expect(msg).toBe("Bad Request");
+    });
+});
 
 describe("/api", () => {
   describe("GET requests", () => {
@@ -86,7 +89,6 @@ describe("/api", () => {
         .then((response) =>
           expect(JSON.parse(response.text)).toEqual(endpointsJSON)
         );
-
     });
   });
 });
