@@ -36,6 +36,48 @@ describe("/api/topics", () => {
     });
   });
 });
+
+describe("/api/articles/", () => {
+  describe("GET requests", () => {
+    test("responds with the specified article when a GET request is made to /api/articles/:article_id", () => {
+      return request(app).get("/api/articles/1").expect(200);
+    });
+    test("responds with the the correct data type and correct article number", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then((result) => {
+          console.log(result.body, "result");
+          const article = result.body.article;
+
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id", 1);
+          expect(article).toHaveProperty("body");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+        });
+    });
+    test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/100")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+        });
+    });
+    test("responds with 400 `Bad Request` when handed something other than a number", () => {
+      return request(app)
+        .get("/api/articles/one")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+
 describe("/api", () => {
   describe("GET requests", () => {
     test("returns the .json object detailing the available endpoints", () => {
@@ -44,6 +86,7 @@ describe("/api", () => {
         .then((response) =>
           expect(JSON.parse(response.text)).toEqual(endpointsJSON)
         );
+
     });
   });
 });
