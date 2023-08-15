@@ -45,7 +45,8 @@ describe("/api/articles/", () => {
         .get("/api/articles/1")
         .expect(200)
         .then((result) => {
-          const article = result.body[0];
+          console.log(result.body, "result");
+          const article = result.body.article;
 
           expect(article).toHaveProperty("author");
           expect(article).toHaveProperty("title");
@@ -64,6 +65,15 @@ describe("/api/articles/", () => {
         .then(({ body }) => {
           const { msg } = body;
           expect(msg).toBe("Not Found");
+        });
+    });
+    test("responds with 400 `Bad Request` when handed something other than a number", () => {
+      return request(app)
+        .get("/api/articles/one")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
         });
     });
   });

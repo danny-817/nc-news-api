@@ -14,11 +14,16 @@ app.get("/api", getApiList);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, request, response, next) => {
+  console.log(err);
   if (err.status && err.msg) {
-    response.status(err.status).send({ msg: "Not Found" });
+    response.status(err.status).send({ msg: err.msg });
   } else next(err);
 });
-
+app.use((err, request, response, next) => {
+  if (err.code === "22P02") {
+    response.status(400).send({ msg: "Bad Request" });
+  }
+});
 app.use((err, request, response, next) => {
   response.status(500).send({ msg: "Internal Server Error" });
 });
