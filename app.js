@@ -14,6 +14,12 @@ app.get("/api", getApiList);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, request, response, next) => {
+  if (err.status && err.msg) {
+    response.status(err.status).send({ msg: "Not Found" });
+  } else next(err);
+});
+
+app.use((err, request, response, next) => {
   response.status(500).send({ msg: "Internal Server Error" });
 });
 
