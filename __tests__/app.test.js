@@ -110,7 +110,7 @@ describe("/api/articles", () => {
     });
     test("responds with 200 status code and all articles with the comments counted and the body removed ", () => {
       return request(app)
-        .get("/api/articles/")
+        .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
           body.forEach((article) => {
@@ -123,6 +123,22 @@ describe("/api/articles", () => {
             expect(article).toHaveProperty("article_img_url");
             expect(article).not.toHaveProperty("body");
           });
+        });
+    });
+    test("responds with 200 status code and all articles with the comments counted and the body removed, sorted in descending order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
+      return request(app)
+        .get("/api/article")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
         });
     });
   });

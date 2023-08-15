@@ -19,6 +19,10 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getAllArticles);
 
+app.use((_, response) => {
+  response.status(404).send({ msg: "Path Not Found" });
+});
+
 app.use((err, request, response, next) => {
   if (err.status && err.msg) {
     response.status(err.status).send({ msg: err.msg });

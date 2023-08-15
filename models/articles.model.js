@@ -11,11 +11,6 @@ function retrieveArticleById(id) {
       return rows[0];
     });
 }
-// function retrieveAllArticles() {
-//   return db.query("SELECT * FROM articles").then(({ rows }) => {
-//     return rows;
-//   });
-// }
 
 function retrieveAllArticles() {
   return db
@@ -26,7 +21,7 @@ function retrieveAllArticles() {
     FROM
       articles
     LEFT JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id;`
+    GROUP BY articles.article_id ORDER BY created_at DESC`
     )
     .then(({ rows }) => {
       return rows;
