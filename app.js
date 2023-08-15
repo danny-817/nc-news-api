@@ -2,7 +2,10 @@ const express = require("express");
 const app = express();
 const getApiList = require("./controllers/api.controller");
 
-const getArticleById = require("./controllers/articles.controller");
+const {
+  getArticleById,
+  getAllArticles,
+} = require("./controllers/articles.controller");
 const getTopicsController = require("./controllers/topics.controller");
 const fs = require("fs/promises");
 
@@ -13,6 +16,8 @@ app.get("/api/topics", getTopicsController);
 app.get("/api", getApiList);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles", getAllArticles);
 
 app.use((err, request, response, next) => {
   if (err.status && err.msg) {
@@ -30,10 +35,3 @@ app.use((err, request, response, next) => {
 });
 
 module.exports = app;
-
-// fs.readFile(`./data/owners/o${id}.json`, "utf-8").then(
-//     (ownerFile) => {
-//       response.status(200).send(ownerFile);
-//     },
-//     () => {
-//       response.status(400).send("no such user");
