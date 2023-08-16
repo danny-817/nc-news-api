@@ -1,12 +1,12 @@
 const db = require("../db/connection");
 
-function addComment(comment) {
+function addComment(comment, article_id) {
   console.log(comment, "in the model");
   const { body, username } = comment;
   return db
     .query(
-      "INSERT INTO comments(body, author) VALUES ($1, $2, $3) RETURNING *;",
-      [body, username]
+      "INSERT INTO comments(body, author, article_id) VALUES ($1, $2, $3) RETURNING *;",
+      [body, username, article_id]
     )
     .then(({ rows }) => {
       console.log(rows[0]);
@@ -14,12 +14,3 @@ function addComment(comment) {
 }
 
 module.exports = { addComment };
-
-// (newSnack) => {
-//   const { snack_name, price, flavour_text } = newSnack;
-//   return db
-//     .query(
-//       "INSERT INTO snacks (snack_name, price, flavour_text) VALUES ($1, $2, $3) RETURNING *;",
-//       [snack_name, price, flavour_text]
-//     )
-//     .then(({ rows }) => rows[0])

@@ -1,8 +1,10 @@
 const addComment = require("../models/comments.model");
 
 function postComment(request, response, next) {
-  console.log(request.body, "in the controller");
-  addComment(request.body)
+  console.log("in the controller");
+  const comment = request.body;
+  const { article_id } = request.params;
+  addComment(comment, article_id)
     .then((comment) => {
       response.status(200).send(comment);
     })
