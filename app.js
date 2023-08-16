@@ -4,11 +4,10 @@ const getApiList = require("./controllers/api.controller");
 
 const { getCommentsByArticleId } = require("./controllers/comments.controller");
 
-
-
 const {
   getArticleById,
   getAllArticles,
+  patchArticle,
 } = require("./controllers/articles.controller");
 
 const getTopicsController = require("./controllers/topics.controller");
@@ -22,15 +21,15 @@ app.get("/api", getApiList);
 
 app.get("/api/articles/:article_id", getArticleById);
 
-
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.get("/api/articles", getAllArticles);
 
+app.patch("/api/articles/:article_id", patchArticle);
+
 app.use((_, response) => {
   response.status(404).send({ msg: "Path Not Found" });
 });
-
 
 app.use((err, request, response, next) => {
   if (err.status && err.msg) {

@@ -79,6 +79,41 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+  describe("PATCH request", () => {
+    test("responds with 200 and a copy of the new article with an INCREASED vote", () => {
+      const testPatch = { inc_votes: 200 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(testPatch)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0]).toHaveProperty("article_id", 1);
+          expect(body[0]).toHaveProperty("votes", 300);
+        });
+    });
+    test("responds with 200 and a copy of the new article with a DECREASED vote", () => {
+      const testPatch = { inc_votes: -300 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(testPatch)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0]).toHaveProperty("article_id", 1);
+          expect(body[0]).toHaveProperty("votes", 0);
+        });
+    });
+    test("responds with 400 and a msg of bad request if the specified path isn't a number", () => {
+      const testPatch = { inc_votes: 200 };
+      return request(app)
+        .patch("/api/articles/one")
+        .expect(400)
+        .send(testPatch)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+  });
 });
 
 describe("/api", () => {
@@ -191,4 +226,8 @@ describe("/api/articles", () => {
         });
     });
   });
+});
+
+describe("", () => {
+  test("", () => {});
 });
