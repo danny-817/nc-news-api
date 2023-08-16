@@ -87,7 +87,6 @@ describe("/api/articles/:article_id", () => {
         .send(testPatch)
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.article[0]).toHaveProperty("article_id", 1);
           expect(body.article[0]).toHaveProperty("votes", 300);
         });
