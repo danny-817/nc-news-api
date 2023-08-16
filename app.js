@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const getApiList = require("./controllers/api.controller");
-
 const {
   getArticleById,
   getAllArticles,
@@ -18,6 +17,8 @@ app.get("/api", getApiList);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getAllArticles);
+
+app.post("/api/articles/:article_id/comments", postComment);
 
 app.use((_, response) => {
   response.status(404).send({ msg: "Path Not Found" });
