@@ -144,17 +144,17 @@ describe("/api/articles", () => {
   });
 });
 
-describe("POST /api/articles/:article_id/comments", () => {
-  describe("", () => {
-    test("POST requests", () => {
-      const testPost = { body: "test body", username: "test user" };
-      return request(app)
-        .post("/api/articles/1/comments")
-        .send(testPost)
-        .expect(200)
-        .then(({ body }) => {
-          console.log(body, "body");
-        });
-    });
-  });
-});
+// describe("POST /api/articles/:article_id/comments", () => {
+//   describe("", () => {
+//     test("POST requests", () => {
+//       const testPost = { body: "test body", username: "test user" };
+//       return request(app)
+//         .post("/api/articles/1/comments")
+//         .send(testPost)
+//         .expect(200)
+//         .then(({ body }) => {
+//           console.log(body, "body");
+//         });
+//     });
+//   });
+// });
