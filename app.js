@@ -1,11 +1,8 @@
 const express = require("express");
 const app = express();
 const getApiList = require("./controllers/api.controller");
-
-const {
-  getArticleById,
-  getCommentsByArticleId,
-} = require("./controllers/articles.controller");
+const { getCommentsByArticleId } = require("./controllers/comments.controller");
+const { getArticleById } = require("./controllers/articles.controller");
 const getTopicsController = require("./controllers/topics.controller");
 const fs = require("fs/promises");
 
