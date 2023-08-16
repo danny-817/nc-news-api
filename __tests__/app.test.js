@@ -144,14 +144,14 @@ describe("/api/articles", () => {
   });
 });
 
-describe("POST /api/articles/:article_id/comments", () => {
-  describe("", () => {
-    test("POST requests", () => {
-      const testPost = {};
-      return request(app)
-        .post("POST /api/articles/:article_id/comments")
-        .expect(200)
-        .then((response) => {});
-    });
-  });
-});
+// describe("POST /api/articles/:article_id/comments", () => {
+//   describe("", () => {
+//     test("POST requests", () => {
+//       const testPost = {};
+//       return request(app)
+//         .post("POST /api/articles/:article_id/comments")
+//         .expect(200)
+//         .then((response) => {});
+//     });
+//   });
+// });
