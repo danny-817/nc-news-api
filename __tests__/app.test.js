@@ -193,7 +193,7 @@ describe("/api/articles", () => {
   });
 });
 
-describe.only("/api/comments/:comment_id", () => {
+describe("/api/comments/:comment_id", () => {
   describe("DELETE requests", () => {
     test("deletes the specified comment and return a 204 code", () => {
       return request(app).delete("/api/comments/1").expect(204);
