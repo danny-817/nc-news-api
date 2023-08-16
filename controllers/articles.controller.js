@@ -13,6 +13,8 @@ function getArticleById(request, response, next) {
     .catch(next);
 }
 
+
+
 function getAllArticles(request, response, next) {
   retrieveAllArticles().then((articlesArray) => {
     response.status(200).send(articlesArray);
@@ -20,3 +22,4 @@ function getAllArticles(request, response, next) {
 }
 
 module.exports = { getArticleById, getAllArticles };
+

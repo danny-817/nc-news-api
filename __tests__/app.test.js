@@ -93,6 +93,52 @@ describe("/api", () => {
   });
 });
 
+
+describe("/api/articles/:article_id/comments", () => {
+  describe("GET requests", () => {
+    test("receieves a 200 status code and retrieves all comments for a specified article", () => {
+      return request(app)
+        .get("/api/articles/9/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(2);
+          body.comments.forEach((comment) => {
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("article_id");
+          });
+        });
+    });
+    test("returned comments are ordered by most recent comment first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+    });
+    test("respond with 400 when the article id is in the wrong format", () => {
+      return request(app)
+        .get("/api/articles/nine/comments")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+
 describe("/api/articles", () => {
   describe("GET requests", () => {
     test("responds with a 200 status code", () => {
@@ -139,6 +185,7 @@ describe("/api/articles", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
+
         });
     });
   });
