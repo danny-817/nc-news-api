@@ -4,15 +4,15 @@ const getApiList = require("./controllers/api.controller");
 
 const { getCommentsByArticleId } = require("./controllers/comments.controller");
 
-
-
 const {
   getArticleById,
   getAllArticles,
 } = require("./controllers/articles.controller");
 
 const getTopicsController = require("./controllers/topics.controller");
+const { getAllUsers } = require("./controllers/users.controller");
 const fs = require("fs/promises");
+const { log } = require("console");
 
 app.use(express.json());
 
@@ -22,15 +22,15 @@ app.get("/api", getApiList);
 
 app.get("/api/articles/:article_id", getArticleById);
 
-
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.get("/api/articles", getAllArticles);
 
-app.use((_, response) => {
-  response.status(404).send({ msg: "Path Not Found" });
-});
+app.get("/api/users", getAllUsers);
 
+app.use((_, response) => {
+  response.status(400).send({ msg: "Path Not Found" });
+});
 
 app.use((err, request, response, next) => {
   if (err.status && err.msg) {
