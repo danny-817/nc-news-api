@@ -1,4 +1,7 @@
-const retrieveArticleById = require("../models/articles.model");
+const {
+  retrieveArticleById,
+  retrieveAllArticles,
+} = require("../models/articles.model");
 
 function getArticleById(request, response, next) {
   const articleId = request.params.article_id;
@@ -10,4 +13,13 @@ function getArticleById(request, response, next) {
     .catch(next);
 }
 
-module.exports = { getArticleById };
+
+
+function getAllArticles(request, response, next) {
+  retrieveAllArticles().then((articlesArray) => {
+    response.status(200).send(articlesArray);
+  });
+}
+
+module.exports = { getArticleById, getAllArticles };
+

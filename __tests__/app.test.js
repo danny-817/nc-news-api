@@ -4,6 +4,7 @@ const request = require("supertest");
 const testdata = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const endpointsJSON = require("../endpoints.json");
+const { forEach } = require("../db/data/test-data/articles");
 
 beforeAll(() => seed(testdata));
 afterAll(() => connection.end());
@@ -92,6 +93,7 @@ describe("/api", () => {
   });
 });
 
+
 describe("/api/articles/:article_id/comments", () => {
   describe("GET requests", () => {
     test("receieves a 200 status code and retrieves all comments for a specified article", () => {
@@ -136,6 +138,54 @@ describe("/api/articles/:article_id/comments", () => {
         .then(({ body }) => {
           const { msg } = body;
           expect(msg).toBe("Not Found");
+
+describe("/api/articles", () => {
+  describe("GET requests", () => {
+    test("responds with a 200 status code", () => {
+      return request(app).get("/api/articles").expect(200);
+    });
+    test("responds with a 200 status code and all the articles in an array", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+          const { body } = response;
+
+          expect(body.length).toBe(13);
+        });
+    });
+    test("responds with 200 status code and all articles with the comments counted and the body removed ", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          body.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).not.toHaveProperty("body");
+          });
+        });
+    });
+    test("responds with 200 status code and all articles with the comments counted and the body removed, sorted in descending order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
+      return request(app)
+        .get("/api/article")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+
         });
     });
   });
