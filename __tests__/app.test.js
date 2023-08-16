@@ -87,8 +87,9 @@ describe("/api/articles/:article_id", () => {
         .send(testPatch)
         .expect(200)
         .then(({ body }) => {
-          expect(body[0]).toHaveProperty("article_id", 1);
-          expect(body[0]).toHaveProperty("votes", 300);
+          console.log(body);
+          expect(body.article[0]).toHaveProperty("article_id", 1);
+          expect(body.article[0]).toHaveProperty("votes", 300);
         });
     });
     test("responds with 200 and a copy of the new article with a DECREASED vote", () => {
@@ -98,12 +99,23 @@ describe("/api/articles/:article_id", () => {
         .send(testPatch)
         .expect(200)
         .then(({ body }) => {
-          expect(body[0]).toHaveProperty("article_id", 1);
-          expect(body[0]).toHaveProperty("votes", 0);
+          expect(body.article[0]).toHaveProperty("article_id", 1);
+          expect(body.article[0]).toHaveProperty("votes", 0);
         });
     });
     test("responds with 400 and a msg of bad request if the specified path isn't a number", () => {
       const testPatch = { inc_votes: 200 };
+      return request(app)
+        .patch("/api/articles/one")
+        .expect(400)
+        .send(testPatch)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("responds with 400 and a msg of bad request if the number isn't in the correct format", () => {
+      const testPatch = { inc_votes: "ten" };
       return request(app)
         .patch("/api/articles/one")
         .expect(400)

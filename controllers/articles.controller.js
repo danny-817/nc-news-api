@@ -25,7 +25,7 @@ function patchArticle(request, response, next) {
 
   patchArticleVotes(article_id, inc_votes)
     .then((patchedArticle) => {
-      response.status(200).send(patchedArticle);
+      response.status(200).send({ article: patchedArticle });
     })
     .catch(next);
 }
