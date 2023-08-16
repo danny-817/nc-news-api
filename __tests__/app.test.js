@@ -93,7 +93,6 @@ describe("/api", () => {
   });
 });
 
-
 describe("/api/articles/:article_id/comments", () => {
   describe("GET requests", () => {
     test("receieves a 200 status code and retrieves all comments for a specified article", () => {
@@ -138,6 +137,10 @@ describe("/api/articles/:article_id/comments", () => {
         .then(({ body }) => {
           const { msg } = body;
           expect(msg).toBe("Not Found");
+        });
+    });
+  });
+});
 
 describe("/api/articles", () => {
   describe("GET requests", () => {
@@ -185,7 +188,6 @@ describe("/api/articles", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
-
         });
     });
   });
