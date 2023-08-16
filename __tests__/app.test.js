@@ -146,12 +146,15 @@ describe("/api/articles", () => {
 
 // describe("POST /api/articles/:article_id/comments", () => {
 //   describe("", () => {
-//     test("POST requests", () => {
-//       const testPost = {};
+//     test.only("POST requests", () => {
+//       const testPost = { body: "test body", username: "test user" };
 //       return request(app)
-//         .post("POST /api/articles/:article_id/comments")
+//         .post("/api/articles/:article_id/comments")
+//         .send(testPost)
 //         .expect(200)
-//         .then((response) => {});
+//         .then(({ body }) => {
+//           console.log(body, "body");
+//         });
 //     });
 //   });
 // });
