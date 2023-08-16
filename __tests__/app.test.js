@@ -201,5 +201,8 @@ describe("/api/comments/:comment_id", () => {
     test("responds with a 400 code if the comment isn't a number", () => {
       return request(app).delete("/api/comments/one").expect(400);
     });
+    test("responds with a 400 code if the comment doesn't exist", () => {
+      return request(app).delete("/api/comments/1000").expect(400);
+    });
   });
 });

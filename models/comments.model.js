@@ -19,6 +19,12 @@ function deleteComment(comment_id) {
       comment_id,
     ])
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 400,
+          msg: "this comment does not exist",
+        });
+      }
       Promise.resolve(rows);
     });
 }

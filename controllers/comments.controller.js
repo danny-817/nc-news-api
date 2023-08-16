@@ -17,7 +17,7 @@ function deleteCommentById(request, response, next) {
   const { comment_id } = request.params;
 
   deleteComment(comment_id)
-    .then(() => {
+    .then((result) => {
       response.status(204).send();
     })
     .catch(next);
