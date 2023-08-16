@@ -18,7 +18,7 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getAllArticles);
 
-app.post("/api/articles/:article_id/comments", postComment);
+// app.post("/api/articles/:article_id/comments", postComment);
 
 app.use((_, response) => {
   response.status(404).send({ msg: "Path Not Found" });
