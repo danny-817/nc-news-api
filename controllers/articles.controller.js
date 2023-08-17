@@ -1,6 +1,7 @@
 const {
   retrieveArticleById,
   retrieveAllArticles,
+  patchArticleVotes,
 } = require("../models/articles.model");
 
 function getArticleById(request, response, next) {
@@ -13,13 +14,20 @@ function getArticleById(request, response, next) {
     .catch(next);
 }
 
-
-
 function getAllArticles(request, response, next) {
   retrieveAllArticles().then((articlesArray) => {
     response.status(200).send(articlesArray);
   });
 }
+function patchArticle(request, response, next) {
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
 
-module.exports = { getArticleById, getAllArticles };
+  patchArticleVotes(article_id, inc_votes)
+    .then((patchedArticle) => {
+      response.status(200).send({ article: patchedArticle });
+    })
+    .catch(next);
+}
 
+module.exports = { getArticleById, getAllArticles, patchArticle };
