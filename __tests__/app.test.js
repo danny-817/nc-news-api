@@ -211,5 +211,34 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
+    test("responds with a 404 code and a msg of Path Not Found for a non-existant but valid article ID", () => {
+      const testPost = { username: "butter_bridge", body: "test body" };
+      return request(app)
+        .post("/api/articles/1000/comments")
+        .send(testPost)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+        });
+    });
+    test("responds with a 201 code and a copy of the comment added when passed extra unneccesary keys", () => {
+      const testPost = {
+        body: "test body",
+        username: "butter_bridge",
+        wrong_key: "wrong string",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testPost)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toHaveProperty("comment_id", expect.any(Number));
+          expect(body).toHaveProperty("body", expect.any(String));
+          expect(body).toHaveProperty("article_id", expect.any(Number));
+          expect(body).toHaveProperty("author", expect.any(String));
+          expect(body).toHaveProperty("votes", expect.any(Number));
+          expect(body).toHaveProperty("created_at", expect.any(String));
+        });
+    });
   });
 });
