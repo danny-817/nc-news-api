@@ -72,6 +72,7 @@
       }
     }
   },
+
   "PATCH /api/articles/:article_id": {
     "description": "takes a specified article ID and alters the vote count by the amount given",
     "queries": [],
@@ -89,5 +90,12 @@
         }
       ]
     }
+
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "takes a specified comment ID and deletes that comment",
+    "queries": [],
+    "exampleResponse": {}
+
   }
 }

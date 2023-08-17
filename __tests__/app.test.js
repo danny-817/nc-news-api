@@ -196,6 +196,7 @@ describe("/api/articles/:article_id", () => {
           });
       });
     });
+
   });
 
   describe("/api/articles", () => {
@@ -246,6 +247,55 @@ describe("/api/articles/:article_id", () => {
             expect(body.msg).toBe("Path Not Found");
           });
       });
+
+    test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
+      return request(app)
+        .get("/api/article")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+        });
+    });
+  });
+});
+
+describe("/api/users", () => {
+  describe("GET requests", () => {
+    test("responds with a 200 code and an array of objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          }),
+            expect(body.users.length).toBe(4);
+        });
+    });
+    test("responds with a 400 code and a msg of Path Not Found if the path isn't correct", () => {
+      return request(app)
+        .get("/api/article")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+        });
+
+    });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE requests", () => {
+    test("deletes the specified comment and return a 204 code", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+    test("responds with a 400 code if the comment isn't a number", () => {
+      return request(app).delete("/api/comments/one").expect(400);
+    });
+    test("responds with a 400 code if the comment doesn't exist", () => {
+      return request(app).delete("/api/comments/1000").expect(400);
     });
   });
 });

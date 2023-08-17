@@ -2,7 +2,14 @@ const express = require("express");
 const app = express();
 const getApiList = require("./controllers/api.controller");
 
+
 const { getCommentsByArticleId } = require("./controllers/comments.controller");
+
+const {
+  getCommentsByArticleId,
+  deleteCommentById,
+} = require("./controllers/comments.controller");
+
 
 const {
   getArticleById,
@@ -11,7 +18,9 @@ const {
 } = require("./controllers/articles.controller");
 
 const getTopicsController = require("./controllers/topics.controller");
+const { getAllUsers } = require("./controllers/users.controller");
 const fs = require("fs/promises");
+const { log } = require("console");
 
 app.use(express.json());
 
@@ -25,10 +34,16 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.get("/api/articles", getAllArticles);
 
+
 app.patch("/api/articles/:article_id", patchArticle);
 
+app.get("/api/users", getAllUsers);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
+
+
 app.use((_, response) => {
-  response.status(404).send({ msg: "Path Not Found" });
+  response.status(400).send({ msg: "Path Not Found" });
 });
 
 app.use((err, request, response, next) => {
