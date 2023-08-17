@@ -185,7 +185,33 @@ describe("/api/articles", () => {
     test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
       return request(app)
         .get("/api/article")
-        .expect(404)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+        });
+    });
+  });
+});
+
+describe("/api/users", () => {
+  describe("GET requests", () => {
+    test("responds with a 200 code and an array of objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          }),
+            expect(body.users.length).toBe(4);
+        });
+    });
+    test("responds with a 400 code and a msg of Path Not Found if the path isn't correct", () => {
+      return request(app)
+        .get("/api/article")
+        .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
         });
