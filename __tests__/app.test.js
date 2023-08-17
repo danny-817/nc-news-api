@@ -218,3 +218,17 @@ describe("/api/users", () => {
     });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE requests", () => {
+    test("deletes the specified comment and return a 204 code", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+    test("responds with a 400 code if the comment isn't a number", () => {
+      return request(app).delete("/api/comments/one").expect(400);
+    });
+    test("responds with a 400 code if the comment doesn't exist", () => {
+      return request(app).delete("/api/comments/1000").expect(400);
+    });
+  });
+});

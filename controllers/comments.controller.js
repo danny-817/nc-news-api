@@ -1,4 +1,7 @@
-const { retrieveCommentsById } = require("../models/comments.model");
+const {
+  retrieveCommentsById,
+  deleteComment,
+} = require("../models/comments.model");
 
 function getCommentsByArticleId(request, response, next) {
   const articleId = request.params.article_id;
@@ -10,4 +13,14 @@ function getCommentsByArticleId(request, response, next) {
     .catch(next);
 }
 
-module.exports = { getCommentsByArticleId };
+function deleteCommentById(request, response, next) {
+  const { comment_id } = request.params;
+
+  deleteComment(comment_id)
+    .then((result) => {
+      response.status(204).send();
+    })
+    .catch(next);
+}
+
+module.exports = { getCommentsByArticleId, deleteCommentById };
