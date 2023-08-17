@@ -35,6 +35,10 @@ function patchArticleVotes(article_id, inc_votes) {
       [inc_votes, article_id]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "User Not Found" });
+      }
+
       return rows;
     });
 }
