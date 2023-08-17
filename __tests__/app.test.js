@@ -248,6 +248,11 @@ describe("/api/articles", () => {
         });
     });
   });
+  // describe("QUERIES", () =>{
+  //   test("returns a 200 code and", () =>{
+
+  //   })
+  //   })
 });
 
 describe("/api/users", () => {
