@@ -136,118 +136,109 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+});
 
-  describe("/api", () => {
-    describe("GET requests", () => {
-      test("returns the .json object detailing the available endpoints", () => {
-        return request(app)
-          .get("/api")
-          .then((response) =>
-            expect(JSON.parse(response.text)).toEqual(endpointsJSON)
-          );
-      });
+describe("/api", () => {
+  describe("GET requests", () => {
+    test("returns the .json object detailing the available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .then((response) =>
+          expect(JSON.parse(response.text)).toEqual(endpointsJSON)
+        );
     });
   });
+});
 
-  describe("/api/articles/:article_id/comments", () => {
-    describe("GET requests", () => {
-      test("receieves a 200 status code and retrieves all comments for a specified article", () => {
-        return request(app)
-          .get("/api/articles/9/comments")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comments.length).toBe(2);
-            body.comments.forEach((comment) => {
-              expect(comment).toHaveProperty("votes");
-              expect(comment).toHaveProperty("comment_id");
-              expect(comment).toHaveProperty("body");
-              expect(comment).toHaveProperty("created_at");
-              expect(comment).toHaveProperty("author");
-              expect(comment).toHaveProperty("article_id");
-            });
+describe("/api/articles/:article_id/comments", () => {
+  describe("GET requests", () => {
+    test("receieves a 200 status code and retrieves all comments for a specified article", () => {
+      return request(app)
+        .get("/api/articles/9/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(2);
+          body.comments.forEach((comment) => {
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("article_id");
           });
-      });
-      test("returned comments are ordered by most recent comment first", () => {
-        return request(app)
-          .get("/api/articles/1/comments")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comments).toBeSortedBy("created_at", {
-              descending: true,
-            });
-          });
-      });
-      test("respond with 400 when the article id is in the wrong format", () => {
-        return request(app)
-          .get("/api/articles/nine/comments")
-          .expect(400)
-          .then(({ body }) => {
-            const { msg } = body;
-            expect(msg).toBe("Bad Request");
-          });
-      });
-      test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
-        return request(app)
-          .get("/api/articles/1000/comments")
-          .expect(404)
-          .then(({ body }) => {
-            const { msg } = body;
-            expect(msg).toBe("Not Found");
-          });
-      });
+        });
     });
-
+    test("returned comments are ordered by most recent comment first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+    });
+    test("respond with 400 when the article id is in the wrong format", () => {
+      return request(app)
+        .get("/api/articles/nine/comments")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+        });
+    });
   });
+});
 
-  describe("/api/articles", () => {
-    describe("GET requests", () => {
-      test("responds with a 200 status code", () => {
-        return request(app).get("/api/articles").expect(200);
-      });
-      test("responds with a 200 status code and all the articles in an array", () => {
-        return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then((response) => {
-            const { body } = response;
+describe("/api/articles", () => {
+  describe("GET requests", () => {
+    test("responds with a 200 status code", () => {
+      return request(app).get("/api/articles").expect(200);
+    });
+    test("responds with a 200 status code and all the articles in an array", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+          const { body } = response;
 
-            expect(body.length).toBe(13);
+          expect(body.length).toBe(13);
+        });
+    });
+    test("responds with 200 status code and all articles with the comments counted and the body removed ", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          body.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).not.toHaveProperty("body");
           });
-      });
-      test("responds with 200 status code and all articles with the comments counted and the body removed ", () => {
-        return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({ body }) => {
-            body.forEach((article) => {
-              expect(article).toHaveProperty("author");
-              expect(article).toHaveProperty("title");
-              expect(article).toHaveProperty("article_id");
-              expect(article).toHaveProperty("topic");
-              expect(article).toHaveProperty("created_at");
-              expect(article).toHaveProperty("votes");
-              expect(article).toHaveProperty("article_img_url");
-              expect(article).not.toHaveProperty("body");
-            });
-          });
-      });
-      test("responds with 200 status code and all articles with the comments counted and the body removed, sorted in descending order", () => {
-        return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body).toBeSortedBy("created_at", { descending: true });
-          });
-      });
-      test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
-        return request(app)
-          .get("/api/article")
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).toBe("Path Not Found");
-          });
-      });
-
+        });
+    });
+    test("responds with 200 status code and all articles with the comments counted and the body removed, sorted in descending order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toBeSortedBy("created_at", { descending: true });
+        });
+    });
     test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
       return request(app)
         .get("/api/article")
@@ -281,7 +272,6 @@ describe("/api/users", () => {
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
         });
-
     });
   });
 });
