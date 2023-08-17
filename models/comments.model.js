@@ -1,15 +1,18 @@
 const db = require("../db/connection");
 
 function addComment(comment, article_id) {
-  console.log(comment, "in the model");
+  if (!Object.hasOwn(comment, "username") || !Object.hasOwn(comment, "body")) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
   const { body, username } = comment;
+
   return db
     .query(
-      "INSERT INTO comments(body, author, article_id) VALUES ($1, $2, $3) RETURNING *;",
+      "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;",
       [body, username, article_id]
     )
     .then(({ rows }) => {
-      console.log(rows[0]);
+      return rows[0];
     });
 }
 

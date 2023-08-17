@@ -8,6 +8,7 @@ const {
 const getTopicsController = require("./controllers/topics.controller");
 const fs = require("fs/promises");
 const { postComment } = require("./controllers/comments.controller");
+const { log } = require("console");
 
 app.use(express.json());
 
@@ -33,7 +34,12 @@ app.use((err, request, response, next) => {
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
     response.status(400).send({ msg: "Bad Request" });
-  }
+  } else next(err);
+});
+app.use((err, request, response, next) => {
+  if (err.code === "23503") {
+    response.status(400).send({ msg: "Username doesn't exist" });
+  } else next(err);
 });
 
 app.use((err, request, response, next) => {

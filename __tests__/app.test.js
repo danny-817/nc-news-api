@@ -144,17 +144,72 @@ describe("/api/articles", () => {
   });
 });
 
-// describe.only("/api/articles/:article_id/comments", () => {
-//   describe("POST requests", () => {
-//     test("responds with a 201 code and a copy of the comment added", () => {
-//       const testPost = { body: "test body", username: "test user" };
-//       return request(app)
-//         .post("/api/articles/1/comments")
-//         .send(testPost)
-//         .expect(201)
-//         .then(({ body }) => {
-//           console.log(body, "body");
-//         });
-//     });
-//   });
-// });
+describe("/api/articles/:article_id/comments", () => {
+  describe("POST requests", () => {
+    test("responds with a 201 code and a copy of the comment added", () => {
+      const testPost = { body: "test body", username: "butter_bridge" };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testPost)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toHaveProperty("comment_id", expect.any(Number));
+          expect(body).toHaveProperty("body", expect.any(String));
+          expect(body).toHaveProperty("article_id", expect.any(Number));
+          expect(body).toHaveProperty("author", expect.any(String));
+          expect(body).toHaveProperty("votes", expect.any(Number));
+          expect(body).toHaveProperty("created_at", expect.any(String));
+        });
+    });
+    test("responds with a 400 code and a msg of Username doesn't exist if an invalid username is given", () => {
+      const testPost = { body: "test body", username: "bad username" };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Username doesn't exist");
+        });
+    });
+    test("responds with a 404 code and a msg of Path Not Found if there is an error in the path", () => {
+      const testPost = { body: "test body", username: "butter_bridge" };
+      return request(app)
+        .post("/api/articles/1/mouse")
+        .send(testPost)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+        });
+    });
+    test("responds with a 400 code and a msg of Bad Request if the article ID is not a number", () => {
+      const testPost = { body: "test body", username: "butter_bridge" };
+      return request(app)
+        .post("/api/articles/one/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("responds with a 400 code and a msg of Bad Request if the request doesn't have the correct keys", () => {
+      const testPost = { dog: "not a cat", cat: "not a dog" };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("responds with a 400 code and a msg of Bad Request if the request doesn't have the correct keys", () => {
+      const testPost = { username: "butter_bridge", cat: "not a dog" };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+  });
+});
