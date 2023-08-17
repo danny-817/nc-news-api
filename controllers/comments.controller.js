@@ -1,4 +1,4 @@
-const addComment = require("../models/comments.model");
+const { addComment } = require("../models/comments.model");
 
 function postComment(request, response, next) {
   console.log("in the controller");
