@@ -12,20 +12,25 @@ function retrieveArticleById(id) {
     });
 }
 
-function retrieveAllArticles() {
-  return db
-    .query(
-      `SELECT
-      articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url ,
-      COUNT(comments.comment_id) AS comments
-    FROM
-      articles
-    LEFT JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id ORDER BY created_at DESC`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+function retrieveAllArticles(topic) {
+  let querys = [];
+  let baseSqlString = `SELECT
+  articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url ,
+  COUNT(comments.comment_id) AS comments
+FROM
+  articles
+LEFT JOIN comments ON articles.article_id = comments.article_id `;
+
+  if (topic) {
+    baseSqlString += `WHERE topic = $1 `;
+    querys.push(topic);
+  }
+
+  baseSqlString += `GROUP BY articles.article_id ORDER BY created_at DESC`;
+  return db.query(baseSqlString, querys).then(({ rows }) => {
+    console.log(rows);
+    return rows;
+  });
 }
 
 function patchArticleVotes(article_id, inc_votes) {

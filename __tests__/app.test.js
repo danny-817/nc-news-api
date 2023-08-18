@@ -211,7 +211,7 @@ describe("/api/articles", () => {
         .then((response) => {
           const { body } = response;
 
-          expect(body.length).toBe(13);
+          expect(body.articles.length).toBe(13);
         });
     });
     test("responds with 200 status code and all articles with the comments counted and the body removed ", () => {
@@ -219,7 +219,7 @@ describe("/api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          body.forEach((article) => {
+          body.articles.forEach((article) => {
             expect(article).toHaveProperty("author");
             expect(article).toHaveProperty("title");
             expect(article).toHaveProperty("article_id");
@@ -236,7 +236,9 @@ describe("/api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toBeSortedBy("created_at", { descending: true });
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
         });
     });
     test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
@@ -248,11 +250,28 @@ describe("/api/articles", () => {
         });
     });
   });
-  // describe("QUERIES", () =>{
-  //   test("returns a 200 code and", () =>{
-
-  //   })
-  //   })
+  describe("QUERIES", () => {
+    test("returns a 200 code and filtered articles when passed a query of topic", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([
+            {
+              article_id: 5,
+              title: "UNCOVERED: catspiracy to bring down democracy",
+              topic: "cats",
+              author: "rogersop",
+              created_at: "2020-08-03T13:14:00.000Z",
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              votes: 0,
+              comments: "2",
+            },
+          ]);
+        });
+    });
+  });
 });
 
 describe("/api/users", () => {

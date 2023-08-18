@@ -15,8 +15,11 @@ function getArticleById(request, response, next) {
 }
 
 function getAllArticles(request, response, next) {
-  retrieveAllArticles().then((articlesArray) => {
-    response.status(200).send(articlesArray);
+  const { topic } = request.query;
+
+  retrieveAllArticles(topic).then((articles) => {
+    console.log(articles, "articles");
+    response.status(200).send({ articles });
   });
 }
 function patchArticle(request, response, next) {
