@@ -79,6 +79,63 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+  describe("PATCH request", () => {
+    test("responds with 200 and a copy of the new article with an INCREASED vote", () => {
+      const testPatch = { inc_votes: 200 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(testPatch)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article[0]).toHaveProperty("article_id", 1);
+          expect(body.article[0]).toHaveProperty("votes", 300);
+        });
+    });
+    test("responds with 200 and a copy of the new article with a DECREASED vote", () => {
+      const testPatch = { inc_votes: -300 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(testPatch)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article[0]).toHaveProperty("article_id", 1);
+          expect(body.article[0]).toHaveProperty("votes", 0);
+        });
+    });
+    test("responds with 400 and a msg of bad request if the specified path isn't a number", () => {
+      const testPatch = { inc_votes: 200 };
+      return request(app)
+        .patch("/api/articles/one")
+        .expect(400)
+        .send(testPatch)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("responds with 400 and a msg of bad request if the number isn't in the correct format", () => {
+      const testPatch = { inc_votes: "ten" };
+      return request(app)
+        .patch("/api/articles/1")
+        .expect(400)
+        .send(testPatch)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("responds with a 404 and a msg of Path Not found if the ID is valid but not in use", () => {
+      const testPatch = { inc_votes: "100" };
+      return request(app)
+        .patch("/api/articles/10000")
+        .expect(404)
+        .send(testPatch)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("User Not Found");
+        });
+    });
+  });
 });
 
 describe("/api", () => {
@@ -89,6 +146,55 @@ describe("/api", () => {
         .then((response) =>
           expect(JSON.parse(response.text)).toEqual(endpointsJSON)
         );
+    });
+  });
+});
+
+describe("/api/articles/:article_id/comments", () => {
+  describe("GET requests", () => {
+    test("receieves a 200 status code and retrieves all comments for a specified article", () => {
+      return request(app)
+        .get("/api/articles/9/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments.length).toBe(2);
+          body.comments.forEach((comment) => {
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("article_id");
+          });
+        });
+    });
+    test("returned comments are ordered by most recent comment first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+    });
+    test("respond with 400 when the article id is in the wrong format", () => {
+      return request(app)
+        .get("/api/articles/nine/comments")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("responds with and error 404 and `Not Found` when handed an id that doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+        });
     });
   });
 });
@@ -136,13 +242,14 @@ describe("/api/articles", () => {
     test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
       return request(app)
         .get("/api/article")
-        .expect(404)
+        .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
         });
     });
   });
 });
+
 
 describe("/api/articles/:article_id/comments", () => {
   describe("POST requests", () => {
@@ -239,6 +346,44 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body).toHaveProperty("votes", expect.any(Number));
           expect(body).toHaveProperty("created_at", expect.any(String));
         });
+
+describe("/api/users", () => {
+  describe("GET requests", () => {
+    test("responds with a 200 code and an array of objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          }),
+            expect(body.users.length).toBe(4);
+        });
+    });
+    test("responds with a 400 code and a msg of Path Not Found if the path isn't correct", () => {
+      return request(app)
+        .get("/api/article")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Path Not Found");
+        });
+    });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE requests", () => {
+    test("deletes the specified comment and return a 204 code", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+    test("responds with a 400 code if the comment isn't a number", () => {
+      return request(app).delete("/api/comments/one").expect(400);
+    });
+    test("responds with a 400 code if the comment doesn't exist", () => {
+      return request(app).delete("/api/comments/1000").expect(400);
+
     });
   });
 });

@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 
+
 function addComment(comment, article_id) {
   if (!Object.hasOwn(comment, "username") || !Object.hasOwn(comment, "body")) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
@@ -23,4 +24,36 @@ function addComment(comment, article_id) {
     });
 }
 
-module.exports = { addComment };
+
+
+function retrieveCommentsById(articleId) {
+  return db
+    .query(
+      `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`,
+      [articleId]
+    )
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+      return rows;
+    });
+}
+function deleteComment(comment_id) {
+  return db
+    .query("DELETE FROM comments WHERE comment_id = $1 RETURNING *;", [
+      comment_id,
+    ])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 400,
+          msg: "this comment does not exist",
+        });
+      }
+      Promise.resolve(rows);
+    });
+}
+
+module.exports = { retrieveCommentsById, deleteComment, addComment };
+
