@@ -140,7 +140,7 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api", () => {
   describe("GET requests", () => {
-    test("returns the .json object detailing the available endpoints", () => {
+    test.only("returns the .json object detailing the available endpoints", () => {
       return request(app)
         .get("/api")
         .then((response) =>

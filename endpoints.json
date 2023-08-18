@@ -26,6 +26,15 @@
       ]
     }
   },
+  "GET /api/users": {
+    "description": " responds with an array of all available users",
+    "queries": [],
+    "exampleResponse": {
+      "username": "NewUser2023",
+      "name": "New User",
+      "avatar_url": "any.url"
+    }
+  },
 
   "GET /api/articles/:article_id/comments": {
     "description": "fetches all the comments for a specfied arcticle and return them sorted by date order with most recent first",
@@ -71,6 +80,11 @@
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment using the specified article ID and responds with the posted comment",
+    "queries": [],
+    "exampleResponse": { "body": "test comment", "username": "butter_bridge" }
   },
 
   "PATCH /api/articles/:article_id": {
