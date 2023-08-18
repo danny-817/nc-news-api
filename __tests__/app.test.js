@@ -281,7 +281,7 @@ describe("/api/articles", () => {
           });
         });
     });
-    test.only("returns a 200 code and articles sorted by specfied column (date default) and accepts an order by query (DESC default)", () => {
+    test("returns a 200 code and articles sorted by specfied column (date default) and accepts an order by query (DESC default)", () => {
       return request(app)
         .get("/api/articles?order_by=ASC")
         .expect(200)
