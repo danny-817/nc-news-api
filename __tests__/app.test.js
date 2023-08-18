@@ -277,7 +277,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.msg).toBe("Username doesn't exist");
         });
     });
-    test.only("responds with a 404 code and a msg of Path Not Found if there is an error in the path", () => {
+    test("responds with a 400 code and a msg of Path Not Found if there is an error in the path", () => {
       const testPost = { body: "test body", username: "butter_bridge" };
       return request(app)
         .post("/api/articles/1/mouse")
