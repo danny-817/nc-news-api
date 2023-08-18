@@ -211,7 +211,7 @@ describe("/api/articles", () => {
         .then((response) => {
           const { body } = response;
 
-          expect(body.length).toBe(13);
+          expect(body.articles.length).toBe(13);
         });
     });
     test("responds with 200 status code and all articles with the comments counted and the body removed ", () => {
@@ -219,7 +219,7 @@ describe("/api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          body.forEach((article) => {
+          body.articles.forEach((article) => {
             expect(article).toHaveProperty("author");
             expect(article).toHaveProperty("title");
             expect(article).toHaveProperty("article_id");
@@ -236,7 +236,9 @@ describe("/api/articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toBeSortedBy("created_at", { descending: true });
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
         });
     });
     test("returns 404 and msg of `Path Not Found` if the path matches no available end point", () => {
@@ -246,6 +248,79 @@ describe("/api/articles", () => {
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
         });
+    });
+  });
+  describe("QUERIES", () => {
+    test("returns a 200 code and filtered articles when passed a query of topic", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual([
+            {
+              article_id: 5,
+              title: "UNCOVERED: catspiracy to bring down democracy",
+              topic: "cats",
+              author: "rogersop",
+              created_at: "2020-08-03T13:14:00.000Z",
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              votes: 0,
+              comments: "2",
+            },
+          ]);
+        });
+    });
+    test("returns a 200 code and articles sorted by specfied column or date by default", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("title", {
+            descending: true,
+          });
+        });
+    });
+    test("returns a 200 code and articles sorted by specfied column (date default) and accepts an order by query (DESC default)", () => {
+      return request(app)
+        .get("/api/articles?order_by=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: false,
+          });
+        });
+    });
+    test("returns a 200 code and an array of sorted objects when passed all 3 queries", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=title&order_by=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(12);
+          expect(body.articles).toBeSortedBy("title", {
+            descending: false,
+          });
+        });
+    });
+    test("return a 400 code and a msg of Bad Request if the sort_by argument isn't valid ", () => {
+      return request(app)
+        .get("/api/articles?sort_by=delete")
+        .expect(400)
+        .then(({ body }) => expect(body.msg).toBe("Bad Request"));
+    });
+    test("return a 404 code and a msg of No topics by that name if the topic argument isn't valid ", () => {
+      return request(app)
+        .get("/api/articles?topic=error")
+        .expect(404)
+        .then(({ body }) => expect(body.msg).toBe("No topics by that name"));
+    });
+    test("return a 400 code and a msg of Bad Request if the order_by argument isn't valid ", () => {
+      return request(app)
+        .get("/api/articles?order_by=increasing")
+        .expect(400)
+        .then(({ body }) => expect(body.msg).toBe("Bad Request"));
     });
   });
 });
