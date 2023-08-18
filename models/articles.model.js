@@ -12,8 +12,11 @@ function retrieveArticleById(id) {
     });
 }
 
-function retrieveAllArticles(topic) {
-  let querys = [];
+function retrieveAllArticles(topic, sort_by = "created_at", order_by = "DESC") {
+  console.log(topic, "topic");
+  console.log(sort_by, "sort by");
+  console.log(order_by, "order by");
+  let queryArr = [];
   let baseSqlString = `SELECT
   articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url ,
   COUNT(comments.comment_id) AS comments
@@ -23,11 +26,11 @@ LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
   if (topic) {
     baseSqlString += `WHERE topic = $1 `;
-    querys.push(topic);
+    queryArr.push(topic);
   }
 
-  baseSqlString += `GROUP BY articles.article_id ORDER BY created_at DESC`;
-  return db.query(baseSqlString, querys).then(({ rows }) => {
+  baseSqlString += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order_by}`;
+  return db.query(baseSqlString, queryArr).then(({ rows }) => {
     console.log(rows);
     return rows;
   });

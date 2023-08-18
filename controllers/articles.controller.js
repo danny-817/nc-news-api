@@ -15,10 +15,10 @@ function getArticleById(request, response, next) {
 }
 
 function getAllArticles(request, response, next) {
-  const { topic } = request.query;
+  const queries = request.query;
+  const { topic, sort_by, order_by } = queries;
 
-  retrieveAllArticles(topic).then((articles) => {
-    console.log(articles, "articles");
+  retrieveAllArticles(topic, sort_by, order_by).then((articles) => {
     response.status(200).send({ articles });
   });
 }

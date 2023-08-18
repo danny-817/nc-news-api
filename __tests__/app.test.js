@@ -271,6 +271,26 @@ describe("/api/articles", () => {
           ]);
         });
     });
+    test("returns a 200 code and articles sorted by specfied column or date by default", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("title", {
+            descending: true,
+          });
+        });
+    });
+    test.only("returns a 200 code and articles sorted by specfied column (date default) and accepts an order by query (DESC default)", () => {
+      return request(app)
+        .get("/api/articles?order_by=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: false,
+          });
+        });
+    });
   });
 });
 
