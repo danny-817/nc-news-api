@@ -18,7 +18,6 @@ const fs = require("fs/promises");
 
 const { postComment } = require("./controllers/comments.controller");
 
-
 const { log } = require("console");
 
 app.use(express.json());
@@ -41,8 +40,7 @@ app.get("/api/users", getAllUsers);
 
 app.delete("/api/comments/:comment_id", deleteCommentById);
 
-
-app.use((_, response) => {
+app.use((request, response) => {
   response.status(400).send({ msg: "Path Not Found" });
 });
 

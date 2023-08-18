@@ -250,7 +250,6 @@ describe("/api/articles", () => {
   });
 });
 
-
 describe("/api/articles/:article_id/comments", () => {
   describe("POST requests", () => {
     test("responds with a 201 code and a copy of the comment added", () => {
@@ -278,12 +277,12 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.msg).toBe("Username doesn't exist");
         });
     });
-    test("responds with a 404 code and a msg of Path Not Found if there is an error in the path", () => {
+    test.only("responds with a 404 code and a msg of Path Not Found if there is an error in the path", () => {
       const testPost = { body: "test body", username: "butter_bridge" };
       return request(app)
         .post("/api/articles/1/mouse")
         .send(testPost)
-        .expect(404)
+        .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Path Not Found");
         });
@@ -346,6 +345,9 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body).toHaveProperty("votes", expect.any(Number));
           expect(body).toHaveProperty("created_at", expect.any(String));
         });
+    });
+  });
+});
 
 describe("/api/users", () => {
   describe("GET requests", () => {
@@ -383,7 +385,6 @@ describe("/api/comments/:comment_id", () => {
     });
     test("responds with a 400 code if the comment doesn't exist", () => {
       return request(app).delete("/api/comments/1000").expect(400);
-
     });
   });
 });

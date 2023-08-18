@@ -1,9 +1,13 @@
-
-const { addComment } = require("../models/comments.model");
+const {
+  addComment,
+  retrieveCommentsById,
+  deleteComment,
+} = require("../models/comments.model");
 
 function postComment(request, response, next) {
   const comment = request.body;
   const { article_id } = request.params;
+  console.log(article_id, "article id");
 
   addComment(comment, article_id)
     .then((comment) => {
@@ -11,12 +15,6 @@ function postComment(request, response, next) {
     })
     .catch((err) => next(err));
 }
-
-
-const {
-  retrieveCommentsById,
-  deleteComment,
-} = require("../models/comments.model");
 
 function getCommentsByArticleId(request, response, next) {
   const articleId = request.params.article_id;
@@ -39,4 +37,3 @@ function deleteCommentById(request, response, next) {
 }
 
 module.exports = { getCommentsByArticleId, deleteCommentById, postComment };
-
