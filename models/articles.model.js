@@ -13,9 +13,24 @@ function retrieveArticleById(id) {
 }
 
 function retrieveAllArticles(topic, sort_by = "created_at", order_by = "DESC") {
-  console.log(topic, "topic");
-  console.log(sort_by, "sort by");
-  console.log(order_by, "order by");
+  const validColumns = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "article_img_url",
+    "votes",
+    "comments",
+  ];
+  const validOrders = ["ASC", "DESC"];
+  if (!validColumns.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+  if (!validOrders.includes(order_by)) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+
   let queryArr = [];
   let baseSqlString = `SELECT
   articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url ,
@@ -31,7 +46,9 @@ LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
   baseSqlString += `GROUP BY articles.article_id ORDER BY ${sort_by} ${order_by}`;
   return db.query(baseSqlString, queryArr).then(({ rows }) => {
-    console.log(rows);
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "No topics by that name" });
+    }
     return rows;
   });
 }

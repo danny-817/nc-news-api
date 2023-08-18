@@ -18,9 +18,11 @@ function getAllArticles(request, response, next) {
   const queries = request.query;
   const { topic, sort_by, order_by } = queries;
 
-  retrieveAllArticles(topic, sort_by, order_by).then((articles) => {
-    response.status(200).send({ articles });
-  });
+  retrieveAllArticles(topic, sort_by, order_by)
+    .then((articles) => {
+      response.status(200).send({ articles });
+    })
+    .catch(next);
 }
 function patchArticle(request, response, next) {
   const { article_id } = request.params;

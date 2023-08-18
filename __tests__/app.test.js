@@ -276,6 +276,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=title")
         .expect(200)
         .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
           expect(body.articles).toBeSortedBy("title", {
             descending: true,
           });
@@ -286,10 +287,40 @@ describe("/api/articles", () => {
         .get("/api/articles?order_by=ASC")
         .expect(200)
         .then(({ body }) => {
+          expect(body.articles.length).toBe(13);
           expect(body.articles).toBeSortedBy("created_at", {
             descending: false,
           });
         });
+    });
+    test("returns a 200 code and an array of sorted objects when passed all 3 queries", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&sort_by=title&order_by=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(12);
+          expect(body.articles).toBeSortedBy("title", {
+            descending: false,
+          });
+        });
+    });
+    test("return a 400 code and a msg of Bad Request if the sort_by argument isn't valid ", () => {
+      return request(app)
+        .get("/api/articles?sort_by=delete")
+        .expect(400)
+        .then(({ body }) => expect(body.msg).toBe("Bad Request"));
+    });
+    test("return a 404 code and a msg of No topics by that name if the topic argument isn't valid ", () => {
+      return request(app)
+        .get("/api/articles?topic=error")
+        .expect(404)
+        .then(({ body }) => expect(body.msg).toBe("No topics by that name"));
+    });
+    test("return a 400 code and a msg of Bad Request if the order_by argument isn't valid ", () => {
+      return request(app)
+        .get("/api/articles?order_by=increasing")
+        .expect(400)
+        .then(({ body }) => expect(body.msg).toBe("Bad Request"));
     });
   });
 });
