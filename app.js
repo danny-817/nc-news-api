@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const getApiList = require("./controllers/api.controller");
@@ -19,7 +20,7 @@ const fs = require("fs/promises");
 const { postComment } = require("./controllers/comments.controller");
 
 const { log } = require("console");
-
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/topics", getTopicsController);
