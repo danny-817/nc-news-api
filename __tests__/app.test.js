@@ -140,7 +140,7 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api", () => {
   describe("GET requests", () => {
-    test.only("returns the .json object detailing the available endpoints", () => {
+    test("returns the .json object detailing the available endpoints", () => {
       return request(app)
         .get("/api")
         .then((response) =>
@@ -259,6 +259,7 @@ describe("/api/articles/:article_id/comments", () => {
         .send(testPost)
         .expect(201)
         .then(({ body }) => {
+          console.log(body);
           expect(body).toHaveProperty("comment_id", expect.any(Number));
           expect(body).toHaveProperty("body", expect.any(String));
           expect(body).toHaveProperty("article_id", expect.any(Number));
