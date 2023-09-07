@@ -20,6 +20,7 @@ function getAllArticles(request, response, next) {
   });
 }
 function patchArticle(request, response, next) {
+  console.log(request);
   const { article_id } = request.params;
   const { inc_votes } = request.body;
 

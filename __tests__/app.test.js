@@ -250,7 +250,7 @@ describe("/api/articles", () => {
   });
 });
 
-describe("/api/articles/:article_id/comments", () => {
+describe.only("/api/articles/:article_id/comments", () => {
   describe("POST requests", () => {
     test("responds with a 201 code and a copy of the comment added", () => {
       const testPost = { body: "test body", username: "butter_bridge" };

@@ -6,6 +6,7 @@ const {
 
 function postComment(request, response, next) {
   const comment = request.body;
+  console.log(comment, "comment");
   const { article_id } = request.params;
 
   addComment(comment, article_id)
