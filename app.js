@@ -6,7 +6,7 @@ const {
   getCommentsByArticleId,
   deleteCommentById,
 } = require("./controllers/comments.controller");
-const cors = require("cors");
+
 const {
   getArticleById,
   getAllArticles,
