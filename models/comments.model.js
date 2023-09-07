@@ -1,8 +1,7 @@
 const db = require("../db/connection");
 
-
 function addComment(comment, article_id) {
-  if (!Object.hasOwn(comment, "username") || !Object.hasOwn(comment, "body")) {
+  if (!comment.hasOwnProperty("username") || !comment.hasOwnProperty("body")) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
   const { body, username } = comment;
@@ -23,8 +22,6 @@ function addComment(comment, article_id) {
       }
     });
 }
-
-
 
 function retrieveCommentsById(articleId) {
   return db
@@ -56,4 +53,3 @@ function deleteComment(comment_id) {
 }
 
 module.exports = { retrieveCommentsById, deleteComment, addComment };
-
