@@ -5,7 +5,7 @@ const {
   getCommentsByArticleId,
   deleteCommentById,
 } = require("./controllers/comments.controller");
-
+const cors = require("cors");
 const {
   getArticleById,
   getAllArticles,
@@ -18,7 +18,7 @@ const fs = require("fs/promises");
 
 const { postComment } = require("./controllers/comments.controller");
 
-const { log } = require("console");
+app.use(cors());
 
 app.use(express.json());
 
